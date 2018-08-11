@@ -1,0 +1,32 @@
+#     def train(self, X, T):
+        
+#         self.count = np.unique(T).shape[0]
+#         unique_classes = np.unique(T)
+#         N = X.shape[0]
+#         self.priors = []
+#         self.mus = []
+#         self.sigmas = []
+#         for index in range(self.count):
+            
+#             self.priors.append(copy(np.count_nonzero(T == unique_classes[index])/N))
+#             mu = []
+#             Sigma = []
+#             occurances = T == unique_classes[index]
+#             if occurances.any():
+#                 mu = X[occurances].mean(0)
+#                 self.mus.append(copy(mu))
+#                 Sigma = np.cov(X[occurances].T)
+#                 self.sigmas.append(copy(Sigma))    
+#         pass
+    
+    
+#     def use(self, X):
+#         self.ds = []
+#         for count in range(self.count):
+#             D = X.shape[1]
+#             sigma_det = self.sigmas[count] if D==1 else np.log(np.linalg.det(self.sigmas[count]))
+#             a = X-self.mus[count].T
+#             sigma_inv = 1.0/self.sigmas[count] if D == 1 else np.linalg.inv(self.sigmas[count])
+#             self.ds.append(-0.5*sigma_det-0.5*np.sum(np.dot(a,sigma_inv)*a,axis=1) + np.log(self.priors[count]))
+#         return self.ds
+#         pass 

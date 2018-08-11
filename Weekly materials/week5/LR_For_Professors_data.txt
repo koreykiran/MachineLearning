@@ -1,0 +1,70 @@
+# Data for testing
+N1 = 50
+N2 = 50
+N = N1 + N2
+D = 2
+K = 2
+
+mu1 = [-1, -1]
+cov1 = np.eye(2)
+
+mu2 = [2,3]
+cov2 = np.eye(2) * 3
+
+#
+#  Train Data
+#
+C1 = np.random.multivariate_normal(mu1, cov1, N1)
+C2 = np.random.multivariate_normal(mu2, cov2, N2)
+
+plt.plot(C1[:, 0], C1[:, 1], 'or')
+plt.plot(C2[:, 0], C2[:, 1], 'xb')
+
+plt.xlim([-3, 6])
+plt.ylim([-3, 7])
+
+Xtrain = np.vstack((C1, C2))
+Ttrain = np.zeros((N, 2))
+Ttrain[:50, 0] = 1
+Ttrain[50:, 1] = 1
+#print(Ttrain)
+
+means, stds = np.mean(Xtrain, 0), np.std(Xtrain, 0)
+# normalize inputs
+Xtrains = (Xtrain - means) / stds
+
+#
+#  Test Data
+#
+Ct1 = np.random.multivariate_normal(mu1, cov1, 20)
+Ct2 = np.random.multivariate_normal(mu2, cov2, 20)
+
+Xtest = np.vstack((Ct1, Ct2))
+Ttest = np.zeros((40, 2))
+Ttest[:20, 0] = 1
+Ttest[20:, 1] = 1
+
+# normalize inputs
+Xtests = (Xtrain - means) / stds
+
+
+plt.figure()
+plt.plot(Ct1[:, 0], Ct1[:, 1], 'or')
+plt.plot(Ct2[:, 0], Ct2[:, 1], 'xb')
+
+plt.xlim([-3, 6])
+plt.ylim([-3, 7])
+------------------------------
+lr1 = LogisticRegression(0.1)
+lr1.train(Xtrain,Ttrain)
+sLD1=[]
+sLD2=[]
+sLD1=lr1.use(Xtest)
+------------------------------
+Yl = np.argmax(sLD1, 1)
+Tl = np.argmax(Ttest, 1)
+
+plt.plot(Tl)
+plt.plot(Yl)
+
+print("Accuracy: ", 100 - np.mean(np.abs(Tl - Yl)) * 100, "%")
